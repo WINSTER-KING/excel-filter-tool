@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>表格筛选工具 · 使用说明</title>
+<style>
+  :root { color-scheme: light; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: #F5F5F7;
+    color: #1D1D1F;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    padding: 48px 20px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  /* 标题区 */
+  .hero {
+    background: linear-gradient(135deg, #0A84FF 0%, #0066CC 100%);
+    color: #fff;
+    border-radius: 24px;
+    padding: 48px 44px;
+    margin-bottom: 28px;
+    box-shadow: 0 12px 32px rgba(0, 102, 204, 0.22);
+  }
+  .hero h1 { font-size: 30px; font-weight: 700; letter-spacing: 0.5px; }
+  .hero p { font-size: 15px; margin-top: 10px; opacity: 0.92; }
+  .hero .badge {
+    display: inline-block; background: rgba(255,255,255,0.18);
+    border-radius: 999px; padding: 3px 14px; font-size: 12.5px;
+    margin-bottom: 14px; letter-spacing: 0.5px;
+  }
+
+  /* 卡片 */
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px 34px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    border: 1px solid #EAEAEE;
+  }
+  .card h2 {
+    font-size: 19px; font-weight: 700; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card h2 .num {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: #0A84FF; color: #fff; font-size: 14px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .card h3 { font-size: 15px; margin: 16px 0 6px; color: #1D1D1F; }
+  .card p { font-size: 14.5px; color: #3a3a3c; margin-bottom: 8px; }
+  .card ul, .card ol { padding-left: 22px; margin-bottom: 8px; }
+  .card li { font-size: 14.5px; color: #3a3a3c; margin-bottom: 6px; }
+  .card li b, .card strong { color: #1D1D1F; }
+  .card li::marker { color: #0A84FF; }
+
+  code {
+    font-family: "SF Mono", Consolas, "Courier New", monospace;
+    background: #F2F2F7; color: #0066CC;
+    border-radius: 6px; padding: 1.5px 7px; font-size: 13px;
+  }
+  pre {
+    background: #1D1D1F; color: #F5F5F7; border-radius: 12px;
+    padding: 16px 18px; overflow-x: auto; font-size: 13px;
+    margin: 10px 0; line-height: 1.6;
+  }
+  pre code { background: none; color: #F5F5F7; padding: 0; }
+
+  /* 提示框 */
+  .tip {
+    background: #F0F7FF; border-left: 4px solid #0A84FF;
+    border-radius: 8px; padding: 10px 16px; font-size: 13.5px;
+    color: #1D1D1F; margin: 12px 0;
+  }
+  .warn {
+    background: #FFF8E6; border-left: 4px solid #FF9F0A;
+    border-radius: 8px; padding: 10px 16px; font-size: 13.5px;
+    color: #1D1D1F; margin: 12px 0;
+  }
+
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+  th, td { text-align: left; padding: 9px 14px; font-size: 13.5px; border-bottom: 1px solid #EEE; }
+  th { background: #FAFAFC; color: #6e6e73; font-weight: 600; }
+
+  /* 界面示意图 */
+  .mockup { background:#fff; border-radius:20px; padding:30px 34px; margin-bottom:22px; box-shadow:0 2px 10px rgba(0,0,0,.04); border:1px solid #EAEAEE; }
+  .mockup h2 { font-size:19px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .mockup h2 .num { width:26px; height:26px; border-radius:8px; background:#0A84FF; color:#fff; font-size:11px; display:inline-flex; align-items:center; justify-content:center; flex:none; }
+  .mockup .caption { font-size:13px; color:#86868B; margin-top:14px; }
+  .window { background:#F5F5F7; border-radius:14px; overflow:visible; border:1px solid #E3E3E8; box-shadow:0 8px 24px rgba(0,0,0,.10); position:relative; }
+  .win-bar { height:40px; background:#FBFBFD; display:flex; align-items:center; padding:0 14px; border-bottom:1px solid #EAEAEE; border-radius:14px 14px 0 0; }
+  .dots { display:flex; gap:7px; }
+  .dot { width:12px; height:12px; border-radius:50%; }
+  .dot.r { background:#FF5F57; } .dot.y { background:#FEBC2E; } .dot.g { background:#28C840; }
+  .win-bar .wtitle { flex:1; text-align:center; font-size:13px; color:#6e6e73; font-weight:600; }
+  .toolbar { display:flex; align-items:center; gap:8px; padding:12px 14px; flex-wrap:wrap; border-bottom:1px solid #EAEAEE; }
+  .btn { border-radius:999px; padding:7px 15px; font-size:12px; font-weight:500; white-space:nowrap; }
+  .btn.primary { background:#0A84FF; color:#fff; }
+  .btn.plain { background:#fff; color:#1D1D1F; border:1px solid #E3E3E8; }
+  .btn.ghost { background:#EFEFF3; color:#0A84FF; }
+  .btn.small { padding:5px 12px; font-size:11px; }
+  .spacer { flex:1; }
+  .table-wrap { padding: 10px 14px 6px; }
+  .grid { display:grid; grid-template-columns: 52px 96px 122px 84px 1fr 102px; gap:6px; }
+  .cell { background:#fff; border-radius:10px; padding:8px 10px; font-size:12px; color:#1D1D1F; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cell.head { background:#EFEFF3; font-weight:600; color:#3a3a3c; display:flex; align-items:center; justify-content:space-between; }
+  .cell.head .arrow { color:#86868B; font-size:10px; margin-left:4px; }
+  .cell.head.active { background:#C9E4FF; }
+  .cell.head.active .arrow { color:#0A84FF; font-weight:700; }
+  .statusbar { margin:6px 14px 14px; background:#fff; border-radius:10px; padding:8px 12px; font-size:12px; color:#86868B; border:1px solid #EAEAEE; }
+  .popup { position:absolute; top:96px; right:18px; width:232px; background:#fff; border-radius:14px; border:1px solid #E3E3E8; box-shadow:0 12px 32px rgba(0,0,0,.18); padding:14px; z-index:5; }
+  .popup .ptitle { font-size:13px; font-weight:700; color:#1D1D1F; }
+  .popup .psub { font-size:11px; color:#86868B; margin-bottom:10px; }
+  .popup .field { font-size:11px; color:#86868B; margin:10px 0 4px; }
+  .popup .input { background:#F2F2F7; border-radius:8px; padding:6px 10px; font-size:12px; color:#86868B; }
+  .popup .row { display:flex; gap:6px; margin-top:8px; }
+  .checkbox { display:flex; align-items:center; gap:7px; font-size:12px; color:#1D1D1F; padding:3px 0; }
+  .checkbox .box { width:15px; height:15px; border-radius:4px; border:1.5px solid #C7C7CC; flex:none; display:inline-flex; align-items:center; justify-content:center; }
+  .checkbox.on .box { background:#0A84FF; border-color:#0A84FF; }
+  .checkbox.on .box::after { content:""; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg) translate(-1px,-1px); }
+  .popup .foot { display:flex; justify-content:space-between; margin-top:14px; }
+  @media (max-width: 640px) { .popup { display:none; } }
+
+  .footer { text-align: center; color: #86868B; font-size: 12.5px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="badge">Excel 数据处理工具</span>
+    <h1>表格筛选工具 · 使用说明</h1>
+    <p>像在 Excel 里一样，点击每一列标题进行筛选，实时预览，一键导出并保留原格式。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span>这个工具是做什么的</h2>
+    <p>打开一个 Excel 文件（<code>.xlsx</code> 或 <code>.xlsm</code>）后，可以<strong>点击每一列的标题</strong>进行筛选，实时预览结果，最后把筛选结果另存为一个新的 Excel 文件（保留原表格式）。工具会<strong>自动记忆</strong>上次的筛选设置，并支持把常用筛选保存为<strong>预设</strong>。</p>
+  </div>
+
+  <div class="mockup">
+    <h2><span class="num">界面</span>界面示意</h2>
+    <div class="window">
+      <div class="win-bar">
+        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+        <div class="wtitle">表格筛选工具</div>
+        <div style="width:50px"></div>
+      </div>
+      <div class="toolbar">
+        <span class="btn primary">选择 Excel 文件</span>
+        <span class="btn plain">未选择文件</span>
+        <span class="spacer"></span>
+        <span class="btn plain small">预设 ▾</span>
+        <span class="btn ghost small">保存预设</span>
+        <span class="btn ghost small">删除预设</span>
+        <span class="spacer"></span>
+        <span class="btn ghost small">重置筛选</span>
+        <span class="btn primary">导出 Excel</span>
+      </div>
+      <div class="table-wrap">
+        <div class="grid">
+          <div class="cell head">序号 <span class="arrow">▾</span></div>
+          <div class="cell head">发现时间 <span class="arrow">▾</span></div>
+          <div class="cell head active">所属中心站 <span class="arrow">●</span></div>
+          <div class="cell head">严重程度 <span class="arrow">▾</span></div>
+          <div class="cell head">问题描述 <span class="arrow">▾</span></div>
+          <div class="cell head">问题状态 <span class="arrow">▾</span></div>
+          <div class="cell">1</div><div class="cell">2026-08-13</div><div class="cell">铁山中心站</div><div class="cell">一般</div><div class="cell">变送器故障</div><div class="cell">问题已关闭</div>
+          <div class="cell">2</div><div class="cell">2026-08-12</div><div class="cell">铁山中心站</div><div class="cell">轻微</div><div class="cell">洗眼器损坏无法使用</div><div class="cell">工单待执行</div>
+          <div class="cell">3</div><div class="cell">2026-08-12</div><div class="cell">黄龙场中心站</div><div class="cell">重要</div><div class="cell">配电室烟雾报警误报</div><div class="cell">问题待验证</div>
+          <div class="cell">4</div><div class="cell">2026-08-11</div><div class="cell">温泉井中心站</div><div class="cell">轻微</div><div class="cell">阀门失效</div><div class="cell">问题已关闭</div>
+          <div class="cell">5</div><div class="cell">2026-08-11</div><div class="cell">五灵山增压站</div><div class="cell">一般</div><div class="cell">数据点位异常</div><div class="cell">问题待分析</div>
+        </div>
+      </div>
+      <div class="statusbar">匹配 15 条 / 共 1337 条（预览仅显示前 200 条，导出为全部）</div>
+      <div class="popup">
+        <div class="ptitle">所属中心站</div>
+        <div class="psub">9 个值</div>
+        <div class="field">搜索值</div>
+        <div class="input">输入文字快速定位…</div>
+        <div class="row"><span class="btn ghost small">全选</span><span class="btn ghost small">清空</span></div>
+        <div class="checkbox on"><span class="box"></span>铁山中心站</div>
+        <div class="checkbox on"><span class="box"></span>黄龙场中心站</div>
+        <div class="checkbox"><span class="box"></span>温泉井中心站</div>
+        <div class="checkbox"><span class="box"></span>五灵山增压站</div>
+        <div class="field">包含文字</div>
+        <div class="input">（该列内容包含此文字）</div>
+        <div class="foot"><span class="btn ghost small">清除本列筛选</span><span class="btn primary small">完成</span></div>
+      </div>
+    </div>
+    <p class="caption">示意图：点击列标题（▾）弹出该列的筛选窗口；正在筛选的列标题会高亮显示 ●。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span>两种运行方式</h2>
+    <h3>方式 A：直接用打包好的 exe（推荐，无需装任何东西）</h3>
+    <ol>
+      <li>确保电脑上已生成 <code>dist\ExcelFilterTool.exe</code>（见第 3 节「如何打包」）。</li>
+      <li>双击运行即可。</li>
+    </ol>
+    <h3>方式 B：直接用 Python 运行</h3>
+    <p>需要电脑装有 Python 3.9+，并已安装 openpyxl：</p>
+    <pre><code>pip install openpyxl
+python excel_filter_tool.py</code></pre>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span>如何打包成 exe</h2>
+    <ol>
+      <li>把 <code>excel_filter_tool.py</code>、<code>build_exe.bat</code>、<code>app.ico</code>（可选，用于图标）放在同一个文件夹。</li>
+      <li>双击 <code>build_exe.bat</code>，脚本会自动装好依赖并打包。</li>
+      <li>完成后，可执行文件在 <code>dist\ExcelFilterTool.exe</code>。</li>
+    </ol>
+    <div class="tip">首次打包需要联网下载依赖，之后生成的 exe 可以单独复制到任何电脑上双击运行。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span>操作步骤</h2>
+    <ol>
+      <li>点左上角「<strong>选择 Excel 文件</strong>」，选中你的表格文件。</li>
+      <li>程序自动识别表头，中间表格实时显示数据；底部状态栏显示「匹配 N 条 / 共 M 条」。</li>
+      <li><strong>筛选（像 Excel 一样）</strong>：点击某一列的标题（带 <code>▾</code> 箭头），弹出该列的筛选窗口，里面可以：
+        <ul>
+          <li><strong>勾选值</strong>：勾选要保留的值（默认全选，取消某个值就排除它；同一列勾多个是「或」，多列之间是「且」）。</li>
+          <li><strong>包含文字</strong>：输入文字，只保留该列内容包含这段文字的行（不区分大小写）。</li>
+          <li><strong>搜索值</strong>：值很多时，在最上面的「搜索值」框输入文字快速定位。</li>
+          <li>「全选 / 清空 / 清除本列筛选」按钮可快速操作。</li>
+        </ul>
+      </li>
+      <li>正在生效筛选的列，标题会高亮并显示 <code>●</code>；「<strong>重置筛选</strong>」按钮可一键恢复全部数据。</li>
+      <li>点右上角「<strong>导出 Excel</strong>」，选择保存位置和文件名，即可得到筛选后的新文件（保留原格式）。</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">5</span>预设与自动记忆</h2>
+    <h3>自动记忆</h3>
+    <p>关闭程序时自动记住当前的表头结构、筛选设置、上次另存目录和文件名模板。下次打开<strong>结构相同的文件</strong>时，会自动套用上次的筛选；另存对话框也会定位到上次位置。</p>
+    <h3>筛选预设</h3>
+    <p>工具栏的「预设」下拉 + 「保存预设 / 删除预设」按钮，可把当前筛选条件、另存目录、文件名模板一起保存为一个预设，下拉选中即可一键套用。</p>
+    <h3>文件名模板</h3>
+    <p>在预设或文件名设置中，可用占位符自动生成导出文件名：</p>
+    <table>
+      <tr><th>占位符</th><th>含义</th><th>示例</th></tr>
+      <tr><td><code>{date}</code></td><td>日期</td><td><code>2026-08-13</code></td></tr>
+      <tr><td><code>{time}</code></td><td>时间</td><td><code>1430</code></td></tr>
+      <tr><td><code>{match}</code></td><td>匹配条数</td><td><code>9</code></td></tr>
+    </table>
+    <p>例如 <code>{date}-铁山站-{match}条</code> 会生成 <code>2026-08-13-铁山站-9条.xlsx</code>。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">6</span>常见问题</h2>
+    <ul>
+      <li><strong>打开文件很慢 / 卡住</strong>：数据量很大时读取需要几秒，属正常现象。</li>
+      <li><strong>导出时提示失败</strong>：请确认保存位置没有被其他程序（如 Excel）占用该文件。</li>
+      <li><strong>预览只有前 200 行</strong>：这是为了界面流畅，<strong>导出仍会导出全部</strong>匹配结果，不影响使用。</li>
+      <li><strong>套用预设没反应</strong>：预设只记录筛选设置，需先打开一个 Excel 文件再套用。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">7</span>技术说明</h2>
+    <ul>
+      <li>界面使用 Python 自带 tkinter 绘制，苹果浅灰配色 + 圆角按钮，无需额外 GUI 依赖。</li>
+      <li>数据读写使用 openpyxl，导出时采用「重开源文件 + 删除多余行」的方式，最大程度保留列宽、字体、颜色、公式和打印设置。</li>
+      <li>配置文件保存在用户目录下的 <code>.excel_filter_tool\config.json</code>，用于记忆和预设；删除该文件即可清除所有记忆。</li>
+    </ul>
+  </div>
+
+  <div class="footer">表格筛选工具 · 使用说明 · 生成的 exe 可单独复制到任意电脑运行</div>
+
+</div>
+</body>
+</html>
